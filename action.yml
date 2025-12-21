@@ -6,6 +6,14 @@ inputs:
     description: GitHub app installation token to use with semantic-release
     required: true
 
+outputs:
+  new-release-published:
+    description: Whether a new release was published
+    value: ${{ steps.semantic-release.outputs.new-release-published }}
+  new-release-version:
+    description: The version of the new release, if one was published
+    value: ${{ steps.semantic-release.outputs.new-release-version }}
+
 runs:
   using: "composite"
   steps:
@@ -29,7 +37,8 @@ runs:
       shell: bash
 
     - name: Run semantic release
-      run: $DIR/node_modules/.bin/semantic-release
+      id: semantic-release
+      run: node ${{ github.action_path }}/run-semantic-release.js
       shell: bash
       env:
         DIR: /tmp/semantic-release-packages
